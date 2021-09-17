@@ -37,6 +37,7 @@ function Player(name, deck){
     this.deck = [...deck];
     this.active = {};
     this.backup = [];
+    
 }
 
 
@@ -245,6 +246,8 @@ Game.prototype = {
 
         //check in hand if kessho available. if yes, show kessho cards. ask player to choose which kessho card to apply and to which player
         //character choices will be either active or backup.
+        this.activePlayer.drawCard();
+
         var choices = [] 
         for(var i = 0; i < this.activePlayer.hand.length; i++){
             var currCard = this.activePlayer.hand[i]
@@ -451,6 +454,8 @@ Game.prototype = {
 
 
 
+
+//EXTRA CARDS
 
 /*
 

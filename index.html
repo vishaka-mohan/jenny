@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Card game</h1>
+
+
+    <p id="kessho-cards"></p>
+    <p id="curr-kessho"></p>
+
+    <p id="curr-player"></p>
+    <p id="curr-backup"></p>
+
+    <select id="pickone">
+
+    </select>
+    <button id="btn">Choose</button>
+
+
+    <select id="pickchar">
+
+    </select>
+    <button id="btn1">Apply</button>
+
+    <p id="curr-attackname"></p>
+    <p id="curr-attackpoints"></p>
+
+    <h3>Set active player</h3>
+    <select id="activeplay"></select>
+    <button id="btn2">Apply</button>
+
+    <h3>Set backup player (comma separated ids)</h3>
+    <input type="text" id="backupplay" />
+    <button id="btn3">Apply</button>
+
+
+
+
+    <script src="index.js"></script>
+    
+    <script>
+
+                
+        var deckPlay1 = [
+            {
+                id: 1,
+                type: "Character",
+                name: "Naruto",
+                hp : 30,
+                damage : 5,
+                grade : 1,
+                attacks : [
+                    {
+                        atid : 0,
+                        req : 1,
+                        attack : 20
+                    },
+                    {
+                        atid : 1,
+                        req : 2,
+                        attack : 30
+                    }
+                ],
+                pred : ""
+            },
+            {
+                id: 2,
+                type: "Character",
+                name : "Sakura",
+                hp : 20,
+                grade : 0,
+                damage : 2,
+                attacks : [
+                    {
+                        atid : 0,
+                        req : 1,
+                        attack : 10
+                    },
+                    {
+                        atid : 1,
+                        req : 2,
+                        attack : 20
+                    }
+                ]
+            },
+            {
+                id: 3,
+                type: "Character",
+                name: "Boruto",
+                grade : 0,
+                hp : 20,
+                damage : 1,
+                attacks : [
+                    {
+                        atid : 0,
+                        req : 1,
+                        attack : 20
+                    }
+                ],
+                pred : ""
+            },
+            {
+                id: 4,
+                type: "Kessho",
+                color: "Red"
+            },
+            {
+                id: 5,
+                type : "Kessho",
+                color : "Blue"
+            }
+        ]
+
+        var deckPlay2 = [
+            {
+                id: 8,
+                type: "Character",
+                name: "Bokuto",
+                hp : 30,
+                damage : 4,
+                grade : 1,
+                attacks : [
+                    {
+                        atid : 0,
+                        req : 1,
+                        attack : 30
+                    },
+                    {
+                        atid : 1,
+                        req : 2,
+                        attack : 40
+                    }
+                ],
+                pred : ""
+            },
+            {
+                id: 9,
+                type: "Character",
+                name : "Sakuraaa",
+                hp : 20,
+                grade : 0,
+                damage : 2,
+                attacks : [
+                    {
+                        atid : 0,
+                        req : 1,
+                        attack : 20
+                    }
+                ]
+            },
+            {
+                id: 10,
+                type: "Character",
+                name: "Boroouto",
+                grade : 0,
+                hp : 20,
+                damage : 10,
+                attacks : [
+                    {
+                        atid : 0,
+                        req : 1,
+                        attack : 10
+                    }
+                ],
+                pred : ""
+            },
+            {
+                id: 11,
+                type: "Kessho",
+                color: "Red"
+            },
+            {
+                id: 12,
+                type : "Kessho",
+                color : "Green"
+            }
+        ]
+
+
+        var player1 = window.prompt("Player 1, choose your name!");
+        var player2 = window.prompt("Player 2, choose your name!");
+        var game = new Game(new Player(player1, deckPlay1), new Player(player2, deckPlay2));
+        game.start();
+    </script>
+</body>
+</html>
+

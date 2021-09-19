@@ -50,15 +50,17 @@
             {
                 id: 1,
                 type: "Character",
-                name: "Naruto",
+                name: "Naruto Kurama Mode",
                 hp : 30,
                 damage : 5,
+                damageTaken : 0,
                 grade : 1,
                 attacks : [
                     {
                         atid : 0,
                         req : 1,
                         attack : 20
+                        
                     },
                     {
                         atid : 1,
@@ -66,7 +68,8 @@
                         attack : 30
                     }
                 ],
-                pred : ""
+                upgrade : "No",
+                pred : "Naruto Regular"
             },
             {
                 id: 2,
@@ -75,6 +78,7 @@
                 hp : 20,
                 grade : 0,
                 damage : 2,
+                damageTaken : 0,
                 attacks : [
                     {
                         atid : 0,
@@ -86,15 +90,18 @@
                         req : 2,
                         attack : 20
                     }
-                ]
+                ],
+                upgrade : "No",
+                pred : ""
             },
             {
                 id: 3,
                 type: "Character",
-                name: "Boruto",
+                name: "Naruto Regular",
                 grade : 0,
                 hp : 20,
                 damage : 1,
+                damageTaken : 0,
                 attacks : [
                     {
                         atid : 0,
@@ -102,6 +109,7 @@
                         attack : 20
                     }
                 ],
+                upgrade : "No",
                 pred : ""
             },
             {
@@ -113,6 +121,22 @@
                 id: 5,
                 type : "Kessho",
                 color : "Blue"
+            },
+
+            {
+                id: 13,
+                type : "Item",
+                name : "Shine sword",
+                function : "Increase",
+                param : "hp",
+                value : "30",
+            },
+            {
+                id: 14,
+                type : "Item",
+                name : "Mint Extra",
+                function : "Draw",
+                value : "4"
             }
         ]
 
@@ -120,9 +144,10 @@
             {
                 id: 8,
                 type: "Character",
-                name: "Bokuto",
+                name: "Sakura tsunade mode",
                 hp : 30,
                 damage : 4,
+                damageTaken : 0,
                 grade : 1,
                 attacks : [
                     {
@@ -136,7 +161,8 @@
                         attack : 40
                     }
                 ],
-                pred : ""
+                upgrade : "No",
+                pred : "Sakuraaa"
             },
             {
                 id: 9,
@@ -145,13 +171,16 @@
                 hp : 20,
                 grade : 0,
                 damage : 2,
+                damageTaken : 0,
                 attacks : [
                     {
                         atid : 0,
                         req : 1,
                         attack : 20
                     }
-                ]
+                ],
+                upgrade : "No",
+                pred : ""
             },
             {
                 id: 10,
@@ -160,6 +189,7 @@
                 grade : 0,
                 hp : 20,
                 damage : 10,
+                damageTaken : 0,
                 attacks : [
                     {
                         atid : 0,
@@ -167,6 +197,7 @@
                         attack : 10
                     }
                 ],
+                upgrade : "No",
                 pred : ""
             },
             {

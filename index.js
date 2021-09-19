@@ -379,6 +379,125 @@ Game.prototype = {
     },
     upgradeCharacter : function(){
 
+        //current names in active + backup
+        var currNames = []
+        if(this.activePlayer.active.grade === 0){
+            currNames.push(this.activePlayer.active.name)
+        }
+        for(var i = 0; i < this.activePlayer.backup.length; i++){
+
+            if(this.activePlayer.backup[i].grade === 0){
+                currNames.push(this.activePlayer.backup[i].name)
+            }
+ 
+        }
+
+        console.log(currNames)
+
+        //check hand
+        //if grade 1 and predecessor in currNames
+        var eligibleCards = []
+        for(var i = 0; i < this.activePlayer.hand.length; i++){
+            var cch = this.activePlayer.hand[i]
+            console.log(cch.name)
+            if(cch.grade === 1 && currNames.includes(cch.pred)){
+                eligibleCards.push(cch.id)
+            }
+        }
+
+        //choose card
+        var upgradeChoice = window.prompt(this.activePlayer.name + ", choose the character you want to use upgrade with." + eligibleCards)
+        var uchar = {}
+
+        for(var i = 0; i < this.activePlayer.hand.length; i++){
+            var cch = this.activePlayer.hand[i]
+            if(cch.id === parseInt(upgradeChoice)){
+                uchar = cch
+                console.log("uchar: ")
+                console.log(uchar)
+                break
+            }
+        }
+
+
+        if(upgradeChoice){
+            //check which active/backup card is eligible for upgrade        
+            var choices = []
+            if(this.activePlayer.active.name === uchar.pred){
+
+                choices.push(this.activePlayer.active.id)
+                
+            }
+            
+
+            for(var i = 0; i < this.activePlayer.backup.length; i++){
+
+                if(this.activePlayer.backup[i].name === uchar.pred){
+                    choices.push(this.activePlayer.backup[i].id)
+                }
+
+            }
+
+            //choose which character to apply it to
+            var upgradableChar = window.prompt(this.activePlayer.name + ", choose the character you want to apply upgrade to." + choices)
+
+            
+            //change the stats of the grade 0 character and upgrade with new grade 1 card. the damage taken remains regardless
+            if(this.activePlayer.active.id === parseInt(upgradableChar)){
+
+                this.activePlayer.active.name = uchar.name
+                this.activePlayer.active.grade = uchar.grade
+                this.activePlayer.active.hp = uchar.hp
+                this.activePlayer.active.hp -= this.activePlayer.active.damageTaken
+                this.activePlayer.active.damage = uchar.damage
+                this.activePlayer.active.upgrade = "Yes"
+                this.activePlayer.active.attacks = [...uchar.attacks]
+                this.activePlayer.active.pred = uchar.pred
+
+                console.log("after upgrade: ")
+                console.log(this.activePlayer.active)
+
+                
+            }
+            else{
+                
+                for(var i = 0; i < this.activePlayer.backup.length; i++){
+
+                    if(this.activePlayer.backup[i].id === parseInt(upgradableChar)){
+                        this.activePlayer.backup[i].name = uchar.name
+                        this.activePlayer.backup[i].grade = uchar.grade
+                        this.activePlayer.backup[i].hp = uchar.hp
+                        this.activePlayer.backup[i].hp -= this.activePlayer.backup[i].damageTaken
+                        this.activePlayer.backup[i].damage = uchar.damage
+                        this.activePlayer.backup[i].upgrade = "Yes"
+                        this.activePlayer.backup[i].attacks = [...uchar.attacks]
+                        this.activePlayer.backup[i].pred = uchar.pred
+                        console.log("after upgrade: ")
+                        console.log(this.activePlayer.backup[i])
+                        break;
+                    }
+        
+                }
+            }
+
+            //remove this grade 1 character from hand
+            var newHand = []
+            for(var i = 0; i < this.activePlayer.hand.length; i++){
+                if(this.activePlayer.hand[i].id === parseInt(upgradeChoice)){
+                    continue
+                }
+                else{
+                    newHand.push(this.activePlayer.hand[i])
+                }
+            }
+            this.activePlayer.hand = []
+            this.activePlayer.hand = [...newHand]
+        }
+       
+
+        
+
+
     },
     attackOpponent : function (){
 
@@ -405,6 +524,8 @@ Game.prototype = {
                 var cch = window.prompt(this.activePlayer.name + ", choose an attack: " + validAttacks)
                 
                 this.opponentPlayer.active.hp -= parseInt(cch)
+
+                this.opponentPlayer.active.damageTaken += parseInt(cch)
                 
                 
                 if(this.opponentPlayer.active.hp <= 0){
@@ -412,6 +533,7 @@ Game.prototype = {
                 }
                 console.log("attack: "+  this.opponentPlayer.active.hp)
                 console.log("opponent health: " + this.opponentPlayer.health)
+                console.log("opponent damage taken: " + this.opponentPlayer.damageTaken)
             }
 
         }
@@ -428,7 +550,7 @@ Game.prototype = {
         
         this.useKessho();
         //this.useItem();
-        //this.upgradeCharacter();
+        this.upgradeCharacter();
         this.attackOpponent();
 
     },

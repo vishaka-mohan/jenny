@@ -283,7 +283,7 @@ Game.prototype = {
         //currKessho has current kessho. now remove it from hand
         var newHand = []
         for(var i = 0; i < this.activePlayer.hand.length; i++){
-            if(this.activePlayer.hand[i].id == choice){
+            if(this.activePlayer.hand[i].id === parseInt(choice)){
                 continue
             }
             else{
@@ -374,7 +374,166 @@ Game.prototype = {
     },
     useItem : function (){
 
+        //show all items
+        var availableItems = []
+        var citem = {}
+        for(var i = 0; i < this.activePlayer.hand.length; i++){
+            if(this.activePlayer.hand[i].type === "Item"){
+                availableItems.push(this.activePlayer.hand[i].id)
+            }
+        }
+        var currItem = window.prompt(this.activePlayer.name + ", choose the item you want to use. Press 0 to skip.: " + availableItems)
+
+        if(currItem != 0){
+
+            for(var i = 0; i < this.activePlayer.hand.length; i++){
+                if(this.activePlayer.hand[i].id === parseInt(currItem)){
+                    citem = this.activePlayer.hand[i]
+                    break
+                }
+            }
+    
+            if(citem.function === "Draw"){
+    
+                for(var i = 0; i < citem.value; i++){
+                    if(this.activePlayer.hand.length == 0){
+                        break;
+                    }
+                    this.activePlayer.drawCard();
+                }
+                
+            }
+            else if(citem.function === "Increase"){
+    
+                var charChoices = []
+                for(var i = 0; i < this.activePlayer.backup.length; i++){
+                    charChoices.push(this.activePlayer.backup[i].id);
+                } 
+                charChoices.push(this.activePlayer.active.id);
+                var currCharacter = window.prompt(this.activePlayer.name + ", choose the character you want to apply it to." + charChoices)
+                console.log(currCharacter + " curr character for item");
+
+                var cchar = {}
+                if(this.activePlayer.active.id === parseInt(currCharacter)){
+
+                    for(var i = 0; i < this.activePlayer.active.attacks.length; i++){
+                        this.activePlayer.active.attacks[i].attack += citem.value
+                    }
+                }
+                else{
+                    for(var i = 0; i < this.activePlayer.backup.length; i++){
+
+                        if(this.activePlayer.backup[i].id === parseInt(currCharacter)){
+                            for(var i = 0; i < this.activePlayer.backup[i].attacks.length; i++){
+                                this.activePlayer.backup[i].attacks[i].attack += citem.value
+                            }
+                            break;
+                        }
+                    }
+                }
+                
+    
+            }
+            else if(citem.function === "Defense"){
+
+                var charChoices = []
+                for(var i = 0; i < this.activePlayer.backup.length; i++){
+                    charChoices.push(this.activePlayer.backup[i].id);
+                } 
+                charChoices.push(this.activePlayer.active.id);
+                var currCharacter = window.prompt(this.activePlayer.name + ", choose the character you want to apply it to." + charChoices)
+                console.log(currCharacter + " curr character for item");
+
+                var cchar = {}
+                if(this.activePlayer.active.id === parseInt(currCharacter)){
+
+                    this.activePlayer.active.defense += citem.value
+                }
+                else{
+                    for(var i = 0; i < this.activePlayer.backup.length; i++){
+
+                        if(this.activePlayer.backup[i].id === parseInt(currCharacter)){
+                            this.activePlayer.backup[i].defense += citem.value
+                            break;
+                        }
+                    }
+                }
+
+    
+            }
+            else if(citem.function === "Heal"){
+
+                var charChoices = []
+                for(var i = 0; i < this.activePlayer.backup.length; i++){
+                    charChoices.push(this.activePlayer.backup[i].id);
+                } 
+                charChoices.push(this.activePlayer.active.id);
+                var currCharacter = window.prompt(this.activePlayer.name + ", choose the character you want to apply it to." + charChoices)
+                console.log(currCharacter + " curr character for item");
+
+                var cchar = {}
+                if(this.activePlayer.active.id === parseInt(currCharacter)){
+
+                    if(this.activePlayer.active.damageTaken >= citem.value){
+                        this.activePlayer.active.damageTaken -= citem.value
+                        this.activePlayer.active.hp += citem.value
+                    }
+                    else{
+                        
+                        this.activePlayer.active.hp += damageTaken
+                        this.activePlayer.active.damageTaken = 0
+                    }
+
+                }
+                else{
+                    for(var i = 0; i < this.activePlayer.backup.length; i++){
+
+                        if(this.activePlayer.backup[i].id === parseInt(currCharacter)){
+                            if(this.activePlayer.backup[i].damageTaken >= citem.value){
+                                this.activePlayer.backup[i].damageTaken -= citem.value
+                                this.activePlayer.backup[i].hp += citem.value
+                            }
+                            else{
+                                
+                                this.activePlayer.backup[i].hp += damageTaken
+                                this.activePlayer.backup[i].damageTaken = 0
+                            }
+                            break;
+                        }
+                    }
+                }
+    
+            }
+            else if(citem.function === "Kessho"){
+
+                var newDeck = []
+                var k = {}
+                //draw the first kessho card
+                for(var i = 0; i < this.activePlayer.deck.length; i++){
+                    if(this.activePlayer.deck[i].type === "Kessho"){
+                        this.activePlayer.hand.push(this.activePlayer.deck[i])
+                        k = this.activePlayer.deck[i]
+                        break;
+                    }
+                    
+                }
+                //remove that card from deck
+                for(var i = 0; i < this.activePlayer.deck.length; i++){
+                    if(this.activePlayer.deck[i].id === k.id){
+                        continue
+                    }
+                    else{
+                        newDeck.push(this.activePlayer.deck[i])
+                    }
+                }
+                this.activePlayer.deck = []
+                this.activePlayer.deck = [...newDeck]
+
+            }
+        }
         
+
+
 
     },
     upgradeCharacter : function(){
@@ -524,6 +683,7 @@ Game.prototype = {
                 var cch = window.prompt(this.activePlayer.name + ", choose an attack: " + validAttacks)
                 
                 this.opponentPlayer.active.hp -= parseInt(cch)
+                this.opponentPlayer.active.hp += this.opponentPlayer.active.defense
 
                 this.opponentPlayer.active.damageTaken += parseInt(cch)
                 
@@ -615,6 +775,13 @@ Game.prototype = {
                 name : "Mint",
                 function : "Draw",
                 value : "2"
+            }
+
+
+
+
+            {
+
             }
 
 

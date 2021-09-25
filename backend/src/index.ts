@@ -48,7 +48,7 @@ app.post("/mint", upload.single("image"), async (req, res) => {
     const options: any = {
       pinataMetadata: {
         name: req.body.name.replace(/\s/g, "-"),
-       
+        card_id : 0,
         description : "",
         type : "",
         hp : 0, 
@@ -84,7 +84,7 @@ app.post("/mint", upload.single("image"), async (req, res) => {
         description: req.body.description,
         type : req.body.type,
         hp : req.body.hp, 
-        
+        card_id : req.body.card_id,
         damage : req.body.damage,
         damageTaken : req.body.damageTaken,
         defense : req.body.defense,
@@ -92,19 +92,19 @@ app.post("/mint", upload.single("image"), async (req, res) => {
         attacks : JSON.parse(req.body.attacks),
         upgrade : req.body.upgrade,
         pred : req.body.pred,
-        symbol: "TUT",
+        symbol: "JEN",
         artifactUri: `ipfs://${pinnedFile.IpfsHash}`,
         displayUri: `ipfs://${pinnedFile.IpfsHash}`,
         creators: [req.body.creator],
         decimals: 0,
-        thumbnailUri: "https://tezostaquito.io/img/favicon.png",
+        thumbnailUri: "https://www.iconsdb.com/icons/preview/deep-pink/letter-j-xxl.png",
         is_transferable: true,
         shouldPreferSymbol: false
       };
 
       const pinnedMetadata = await pinata.pinJSONToIPFS(metadata, {
         pinataMetadata: {
-          name: "TUT-metadata"
+          name: "Jenny-metadata"
         }
       });
 
@@ -119,13 +119,15 @@ app.post("/mint", upload.single("image"), async (req, res) => {
       } else {
         res
           .status(500)
-          .json({ status: false, msg: "metadata were not pinned" });
+          .json({ status: false, msg: "metadata was not pinned" });
       }
     } else {
       res.status(500).json({ status: false, msg: "file was not pinned" });
     }
   }
 });
+
+
 
 // starts the Express server
 app.listen(port, () => {

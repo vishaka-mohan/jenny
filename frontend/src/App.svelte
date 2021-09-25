@@ -1,18 +1,19 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { TezosToolkit, MichelCodecPacker } from "@taquito/taquito";
+  
+  import { TezosToolkit, MichelCodecPacker, MichelsonMap } from "@taquito/taquito";
   import { char2Bytes, bytes2Char } from "@taquito/utils";
   import { BeaconWallet } from "@taquito/beacon-wallet";
   import { NetworkType } from "@airgap/beacon-sdk";
-
+  
   let Tezos: TezosToolkit;
   let wallet: BeaconWallet;
   const walletOptions = {
-    name: "Illic et Numquam",
+    name: "Jenny",
     preferredNetwork: NetworkType.FLORENCENET
   };
   let userAddress: string;
-  let files, name, type, description, hp, id, damage, damageTaken, defense, grade, at1id, at1req, at1points, at1name, at2name, at2id, at2req, at2points, upgrade, pred ;
+  let files, name, type, card_id, description, hp, id, damage, damageTaken, defense, grade, at1id, at1req, at1points, at1name, at2name, at2id, at2req, at2points, upgrade, pred ;
 
   if (process.env.NODE_ENV === "dev") {
     //title = "uranus";
@@ -24,7 +25,7 @@
     process.env.NODE_ENV !== "production"
       ? "http://localhost:8080"
       : "https://my-cool-backend-app.com";
-  const contractAddress = "KT1APQC6Fuwx5MdEj2CC6ayvsS14qWtp4VVk";
+  const contractAddress = "KT1F2BcW3XLPVvHJiRe9X1LswsPYmXCQVUjp";
   let nftStorage = undefined;
   let userNfts: { tokenId: number; ipfsHash: string }[] = [];
   let pinningMetadata = false;
@@ -89,7 +90,7 @@
      
       attacks.push({atid : at1id, atname : at1name, req: at1req, attack : at1points });
       attacks.push({atid : at2id, atname : at2name, req: at2req, attack : at2points });
-
+      data.append('card_id', card_id);
       data.append('attacks', JSON.stringify(attacks));
       data.append("image", files[0]);
       data.append("name", name);
@@ -124,7 +125,7 @@
           // saves NFT on-chain
           const contract = await Tezos.wallet.at(contractAddress);
           const op = await contract.methods
-            .mint(char2Bytes("ipfs://" + data.msg.metadataHash), userAddress)
+            .mint(card_id, char2Bytes("ipfs://" + data.msg.metadataHash), MichelsonMap.fromLiteral({symbol: char2Bytes("JEN")}), type)
             .send();
           console.log("Op hash:", op.opHash);
           await op.confirmation();
@@ -142,6 +143,7 @@
           hp = 0, 
           id = 0;
           damage = 0;
+          card_id = 0;
           damageTaken = 0;
           defense = 0;
           grade = 0;
@@ -182,7 +184,10 @@
       await getUserNfts(userAddress);
     }
   });
+
 </script>
+
+
 
 <style lang="scss">
   $tezos-blue: #2e7df7;
@@ -296,6 +301,12 @@
           <div>Upload character picture</div>
           <br />
           <input type="file" bind:files />
+        </div>
+        <div>
+          <label for="image-id">
+            <span>Card id:</span>
+            <input type="number" id="image-id" bind:value={card_id} />
+          </label>
         </div>
         <div>
           <label for="image-name">

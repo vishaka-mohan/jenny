@@ -405,6 +405,7 @@ Game.prototype = {
             for(var i = 0; i < this.activePlayer.hand.length; i++){
                 if(this.activePlayer.hand[i].id === parseInt(currItem)){
                     citem = this.activePlayer.hand[i]
+                    this.activePlayer.hand.splice(i,1)
                     break
                 }
             }

@@ -94,7 +94,7 @@ function Game(player1, player2) {
     this.opponentPlayer.hand.push(opponentChars[k]);
 
     this.activePlayer.deck = this.activePlayer.deck.filter(function(el) { return el.id != activeChars[j].id; }); 
-    this.opponentPlayer.deck = this.opponentPlayer.deck.filter(function(el) { return el.id != opponentChars[j].id; }); 
+    this.opponentPlayer.deck = this.opponentPlayer.deck.filter(function(el) { return el.id != opponentChars[k].id; }); 
 
     this.activePlayer.shuffleDeck();
     this.opponentPlayer.shuffleDeck();
@@ -164,7 +164,7 @@ Game.prototype = {
         
         for(var i = 0; i < playy.hand.length; i++){
             var currCard = playy.hand[i]
-            console.log(currCard)
+            //console.log(currCard)
             if(currCard.type == "Character" && currCard.grade == 0){
                 choices.push(currCard.id)
             }
@@ -185,6 +185,8 @@ Game.prototype = {
             //console.log(currCard)
             if(currCard.id == choice){
                 playy.active = currCard
+                playy.hand.splice(i, 1)
+                break;
             }
 
         }
@@ -208,8 +210,8 @@ Game.prototype = {
         
         for(var i = 0; i < playy.hand.length; i++){
             var currCard = playy.hand[i]
-            console.log(currCard)
-            if(currCard.type == "Character" && currCard.grade == 0 && currCard.id != playy.active.id){
+            //console.log(currCard)
+            if(currCard.type == "Character" && currCard.grade === 0 && currCard.id != playy.active.id){
                 choices.push(currCard.id)
             }
 
@@ -223,6 +225,7 @@ Game.prototype = {
             str += "<option value='" + item.id + "'>" + item.name + "</option>"
         }*/
         var choice = window.prompt(playy.name + ", choose your backup player(comma separated) " + choices)
+        var toRemove = []
         if(choice){
             var ccs = choice.split(",").map(Number)
             //document.getElementById("activeplay").innerHTML = str;
@@ -232,11 +235,24 @@ Game.prototype = {
                     //console.log(currCard)
                     if(currCard.id == ccs[j]){
                         playy.backup.push(currCard) 
+                        toRemove.push(i)
+                        break
                     
                     }
         
                 }
             }
+
+            var newHand = []
+
+            for(k = 0; k < playy.hand.length; k++){
+                if(!toRemove.includes(k)){
+                    newHand.push(playy.hand[k])
+                }
+            }
+
+            playy.hand = [...newHand]
+            
         }
         
         
@@ -565,7 +581,7 @@ Game.prototype = {
         }
 
         //choose card
-        var upgradeChoice = window.prompt(this.activePlayer.name + ", choose the character you want to use upgrade with." + eligibleCards)
+        var upgradeChoice = window.prompt(this.activePlayer.name + ", choose the  grade 1 character you want to use upgrade with." + eligibleCards)
         var uchar = {}
 
         for(var i = 0; i < this.activePlayer.hand.length; i++){
@@ -689,11 +705,34 @@ Game.prototype = {
                 
                 
                 if(this.opponentPlayer.active.hp <= 0){
+                    console.log(this.opponentPlayer.health + " opponent health before")
                     this.opponentPlayer.health -= this.activePlayer.active.damage
+                    
+                    if(this.opponentPlayer.backup.length == 0){
+                        this.opponentPlayer = 0
+
+                    }
+                    else{
+                        var potentialActive = []
+                        for(var i = 0; i < this.opponentPlayer.backup.length; i++){
+                            potentialActive.push(this.opponentPlayer.backup[i].id)
+                        }
+                        var cch = window.prompt(this.opponentPlayer.name + ", choose an active player: " + potentialActive)
+                        
+                        for(var i = 0; i < this.opponentPlayer.backup.length; i++){
+                            if(this.opponentPlayer.backup[i].id === parseInt(cch)){
+                                this.opponentPlayer.active = JSON.parse(JSON.stringify(this.opponentPlayer.backup[i]))
+                                this.opponentPlayer.backup.splice(i, 1)
+                                console.log(this.opponentPlayer.active + " new active")
+                                break;
+                            }
+                            
+                        }
+                    }
                 }
                 console.log("attack: "+  this.opponentPlayer.active.hp)
                 console.log("opponent health: " + this.opponentPlayer.health)
-                console.log("opponent damage taken: " + this.opponentPlayer.damageTaken)
+                console.log("opponent damage taken: " + this.opponentPlayer.active.damageTaken)
             }
 
         }
@@ -709,9 +748,11 @@ Game.prototype = {
     playTurn: function () {
         
         this.useKessho();
-        //this.useItem();
+        this.useItem();
+        this.setBackup(this.activePlayer);
         this.upgradeCharacter();
         this.attackOpponent();
+        
 
     },
 

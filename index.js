@@ -682,7 +682,8 @@ Game.prototype = {
             var attackChoices = []
             
             var ch = window.prompt("Press 1 to attack or press 0 to let go of the turn");
-            if(ch == 1){
+            console.log(this.activePlayer.active.kesshos + " kesshos available currently ")
+            if(ch == 1 && this.activePlayer.active.kesshos){
 
                 var validAttacks = []
                 for(var i = 0; i < this.activePlayer.active.attacks.length; i++){
@@ -710,7 +711,7 @@ Game.prototype = {
                     this.opponentPlayer.health -= this.activePlayer.active.damage
                     
                     if(this.opponentPlayer.backup.length == 0){
-                        this.opponentPlayer = 0
+                        this.opponentPlayer.health = 0
 
                     }
                     else{
